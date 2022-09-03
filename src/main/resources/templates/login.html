@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bax的SSO实验平台</title>
+
+    <link th:href="@{/static/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <script th:src="@{/static/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.min.css}">
+    <script th:src="@{/static/bootstrap/js/bootstrap.min.js}"></script> -->
+</head>
+<body class="bg-black bg-opacity-75">
+    <div class="container vh-100">
+        <div class="row vh-100">
+            
+            <div class="col-md-5 m-auto p-5 justify-content-center bg-white rounded">
+                <div class="row">
+                    <h4 class="text-center modal-title">简易SSO单点登陆</h4>
+                </div>
+                <form  action="##" onsubmit="return false" class="form-horizontal" role="form" method="post">
+                    <div class="form-group">
+                        <div class="form-floating mb-3 mt-3">
+                            <input  type="text"  class="form-control" name="username" placeholder="请输入用户名">
+                            <label class="form-label" >用户名:</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-floating mb-3 mt-3  ">
+                            <input type="password" class="form-control" name="password" placeholder="请输入密码" >
+                            <label class="form-label">密码</label>    
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="">
+                            <button  class="btn btn-primary btn-lg btn-block form-control" id="loginBtn"  style="margin-top:10px;">登录</button>
+                            <!-- <button class="btn btn-primary  btn-lg col-md-offset-2" style="margin-top:10px;">注册</button> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script th:src="@{/static/ajax/libs/layer/layer.min.js}"></script>
+    <script th:src="@{/static/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+    <script th:src="@{/static/ruoyi/js/ry-ui.js?v=4.7.4}"></script>
+
+    <script th:inline="javascript">
+        function GetQueryString (name)
+        {
+            let reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            let r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+
+        $("#loginBtn").click(function (){
+            let redirectUrl = GetQueryString("target");
+            console.log("target" + redirectUrl);
+            let username = $.common.trim($("input[name='username']").val());
+            let password = $.common.trim($("input[name='password']").val());
+            console.log("username:" + username + "password:" + password);
+            $.ajax({
+                url:/*[[@{/Admin/tokenlogin}]]*/,
+                dataType:"json",
+                type: "post",
+                data: {
+                    "username": username,
+                    "password": password
+                },
+                success: function (res) {
+                    console.log(res);
+                    if (redirectUrl != null && redirectUrl != ""){
+                        if (res.code == 200) {
+                            layer.alert("登陆成功",function (){
+                                location.href = redirectUrl;
+                            })
+
+                        } else if(res.code == 100){
+                            alert("登录失败");
+                            location.reload();
+                        }
+                    }else {
+                        layer.alert("登陆成功",function (){
+                            window.location.href = /*[[@{/page/index}]]*/;
+                        })
+                    }
+                }
+            });
+        })
+
+        // function login() {
+        //
+        // }
+    </script>
+</body>
+</html>
+

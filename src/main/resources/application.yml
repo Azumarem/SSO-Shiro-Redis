@@ -1,0 +1,22 @@
+
+# spring配置
+spring:
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    mode: HTML5
+    enconding: uft-8
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/sso?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: root
+      password: 123456
+server:
+  port: 8080
+
+TTL: 1
+refreshTTL: 2
