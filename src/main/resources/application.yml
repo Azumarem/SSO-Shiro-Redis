@@ -1,22 +1,36 @@
-
-# spring配置
 spring:
   mvc:
     static-path-pattern: /static/**
   thymeleaf:
     mode: HTML5
-    enconding: uft-8
+    enconding: utf-8
     cache: false
     prefix: classpath:/templates/
     suffix: .html
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/sso?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://localhost:3306/shiro?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       username: root
       password: 123456
+  redis:
+    port: 6379
+    host: localhost
+
+#  application:
+#    name: shiro
+
 server:
   port: 8080
+#  servlet:
+#    context-path: /shiro
 
-TTL: 1
-refreshTTL: 2
+shiro:
+  enabled: true # 开启shiro
+
+# log
+logging:
+  file:
+    path: ./logs
+  config: D:\Code\Simple_SSO_shiro\src\main\resources\logback-spring-dev.xml
+

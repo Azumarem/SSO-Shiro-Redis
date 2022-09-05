@@ -61,7 +61,7 @@
             let password = $.common.trim($("input[name='password']").val());
             console.log("username:" + username + "password:" + password);
             $.ajax({
-                url:/*[[@{/Admin/tokenlogin}]]*/,
+                url:/*[[@{/Admin/login}]]*/,
                 dataType:"json",
                 type: "post",
                 data: {
@@ -70,21 +70,26 @@
                 },
                 success: function (res) {
                     console.log(res);
-                    if (redirectUrl != null && redirectUrl != ""){
+                    // if (redirectUrl != null && redirectUrl != ""){
                         if (res.code == 200) {
-                            layer.alert("登陆成功",function (){
-                                location.href = redirectUrl;
-                            })
-
+                            if (redirectUrl != null && redirectUrl != "") {
+                                layer.alert(res.msg, function () {
+                                    location.href = redirectUrl;
+                                })
+                            } else{
+                                    layer.alert("sso登陆成功",function (){
+                                        window.location.href = /*[[@{/page/index}]]*/;
+                                    })
+                            }
                         } else if(res.code == 100){
-                            alert("登录失败");
+                            alert(res.msg);
                             location.reload();
                         }
-                    }else {
-                        layer.alert("登陆成功",function (){
-                            window.location.href = /*[[@{/page/index}]]*/;
-                        })
-                    }
+                    // }
+                    // else {
+                    //
+
+                    // }
                 }
             });
         })

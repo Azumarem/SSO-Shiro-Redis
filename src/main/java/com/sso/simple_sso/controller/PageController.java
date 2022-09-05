@@ -33,4 +33,9 @@ public class PageController {
     public String index(){
         return "index";
     }
+
+    @RequestMapping("/register")
+    public String register(){
+        return "register";
+    }
 }

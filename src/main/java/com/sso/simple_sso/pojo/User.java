@@ -3,6 +3,10 @@ package com.sso.simple_sso.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: bax
@@ -11,10 +15,14 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @AllArgsConstructor
+@Accessors(chain = true)
 @NoArgsConstructor
-public class User {
+public class User implements Serializable {
+    private String  id;
+    private String username;
+    private String password;
+    private String salt;
 
-    private Integer Id;
-    private String userName;
-    private String passWord;
+    //定义角色集合
+    private List<Role> roles;
 }

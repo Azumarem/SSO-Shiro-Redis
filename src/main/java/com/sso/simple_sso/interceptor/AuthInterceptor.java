@@ -1,16 +1,21 @@
-package com.sso.simple_sso.filter;
+package com.sso.simple_sso.interceptor;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.sso.simple_sso.pojo.User;
+import com.sso.simple_sso.service.UserService;
 import com.sso.simple_sso.utils.JwtUtil;
 import com.sso.simple_sso.utils.Result;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,43 +32,24 @@ import java.util.Map;
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
+    @Autowired
+    UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        JwtUtil jwtUtil = new JwtUtil();
-
-        log.info("Token Interceptor preHandle ");
-
-        if(!(handler instanceof HandlerMethod)){
+        //过滤ajax
+        if(null != request.getHeader("X-Requested-With") && "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))){
             return true;
         }
 
-        String token = request.getHeader("token");
+        //登陆信息
+        Subject subject = SecurityUtils.getSubject();
+        String username = (String) subject.getPrincipal();
+        User user = userService.findByUserName(username);
+        System.out.println(user);
+        request.setAttribute("user",user);
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        Method method = handlerMethod.getMethod();
-
-        if(method.isAnnotationPresent(LoginRequired.class)){
-            LoginRequired loginRequired = method.getAnnotation(LoginRequired.class);
-            if(loginRequired.loginSuccess()){
-                if( token == null ){
-                    throw new RuntimeException("无token请重新登陆");
-                }
-
-                Claims claims = JwtUtil.tokenToOut(token);
-                log.info("Interceptor claims :",claims);
-
-                if (claims!=null){
-                    log.info("claims 有效");
-                }else {
-                    log.info("claims 过期");
-                    returnJson(response);
-                    return false;
-                }
-                return true;
-            }
-        }
         return true;
     }
 

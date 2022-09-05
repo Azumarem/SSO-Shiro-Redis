@@ -22,7 +22,7 @@ public class JwtUtil {
             long nowMillis = System.currentTimeMillis();
             JwtBuilder jwtBuilder =  Jwts.builder()
                     .setId(user.getId()+"")
-                    .setSubject(user.getUserName())    //用户名
+                    .setSubject(user.getUsername())    //用户名
                     .setIssuedAt(new Date())//登录时间
                     .signWith(SignatureAlgorithm.HS256, "my-123");
             if (TTLMillis >= 0){
